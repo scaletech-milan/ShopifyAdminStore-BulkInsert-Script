@@ -1,0 +1,16 @@
+{
+  "name": "shopifyadminstore-bulkinsert-script",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@shopify/admin-api-client": "^0.2.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2"
+  }
+}
