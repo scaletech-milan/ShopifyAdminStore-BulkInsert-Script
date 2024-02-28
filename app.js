@@ -36,14 +36,14 @@ app.get('/products', async (req, res) => {
 
 app.post('/products', async (req, res) => {
     try {
-        const numberOfProducts = 1; // Define the number of products you want to insert
+        const numberOfProducts = 0; // Define the number of products you want to insert
         const startFrom = 1; // Edit based on already added jacket records (For maintaining sequence in store)
         let insertedRecords = []
 
         for (let i = startFrom; i <= numberOfProducts + startFrom; i++) {
             const body = {
                 product: {
-                    title: `Jacket ${i} `
+                    title: `Velenja ${i} `
                 }
             };
             const response = await client.post("/products", { data: body });
@@ -69,15 +69,15 @@ app.post('/products', async (req, res) => {
 
 app.put('/products', async (req, res) => {
     try {
-        const numberOfProducts = 2; // Define the number of products you want to update
+        const numberOfProducts = 1; // Define the number of products you want to update
 
         for (let i = 1; i <= numberOfProducts; i++) {
             const body = {
                 product: {
-                    title: `Leather Jacket`
+                    title: `All Habi Habii`
                 }
             };
-            const response = await client.put("/products/7667583287493", { data: body });
+            const response = await client.put("/products/7676070133957", { data: body });
 
             if (response.ok) {
                 const responseBody = await response.json();
@@ -130,6 +130,71 @@ async function appendToInsertedProducts(insertedRecords) {
         throw error;
     }
 }
+
+
+async function manipulateProducts() {
+    try {
+        // Inserting 3500 records
+        const numberOfInserts = 3500;
+        const insertedRecordIds = [];
+
+        for (let i = 1; i <= numberOfInserts; i++) {
+            const body = {
+                product: {
+                    title: `Ahland ${i} `
+                }
+            };
+            const response = await client.post("/products", { data: body });
+
+            if (response.ok) {
+                const responseBody = await response.json();
+                console.log(`Product ${i} inserted successfully. ID: ${responseBody.product.id}`);
+                insertedRecordIds.push(responseBody.product.id);
+            } else {
+                console.error(`Failed to insert product ${i}: `, response.statusText);
+            }
+        }
+
+        // Updating 3500 records
+        const numberOfUpdates = 1;
+
+        for (const productId of insertedRecordIds) {
+            for (let i = 1; i <= numberOfUpdates; i++) {
+                const body = {
+                    product: {
+                        title: `comania ${i}`
+                    }
+                };
+                const response = await client.put(`/products/${productId}`, { data: body });
+
+                if (response.ok) {
+                    console.log(`Product ${productId} updated successfully.`);
+                } else {
+                    console.error(`Failed to update product ${productId}: `, response.statusText);
+                }
+            }
+        }
+
+        // Deleting 3500 records
+        for (const productId of insertedRecordIds) {
+            const response = await client.delete(`/products/${productId}`);
+            if (response.ok) {
+                console.log(`Product ${productId} deleted successfully.`);
+            } else {
+                console.error(`Failed to delete product ${productId}: `, response.statusText);
+            }
+        }
+
+        console.log("All operations completed successfully.");
+    } catch (error) {
+        console.error("Error during operation:", error);
+    }
+}
+
+// Uncomment below code when we have to CREATE, UPDATE and DELETE the same inserted recods in bunch.
+// // Call the function
+// manipulateProducts();
+
 
 app.listen(port, (error) => {
     if (!error) {
