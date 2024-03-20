@@ -6,6 +6,9 @@ dotenv.config();
 
 const port = process.env.PORT;
 const client = require("./shopify-connection/client");
+const clientForStoreOne = require("./shopify-connection/client-for-store-one");
+const clientForStoreTwo = require("./shopify-connection/client-for-store-two");
+
 const insertProductVariants = require("./sample-data/insert_variants_data");
 const insertProductImages = require("./sample-data/insert_images_data");
 const updateProductVariants = require("./sample-data/update_variants_data");
@@ -51,7 +54,7 @@ app.post("/products", async (req, res) => {
     for (let i = startFrom; i <= numberOfProducts + startFrom; i++) {
       const body = {
         product: {
-          title: `GRASIC ${i}`,
+          title: `Fortuner ${i}`,
           body_html:
             "<p>Made from our softest poly-cotton fabric ever produced, these Polos offer unbeatable comfort and durability.</p>\n<p>Featuring a structured collar and branded buttons, our Polos deliver a sophisticated and refined look, perfect for any occasion. With the same signature tailored fit that our customers know and love, these Polos are designed to flatter your physique while still allowing for maximum freedom of movement.</p>\n<p>Our Polos also feature a printed neck label, ensuring maximum comfort throughout the day. Whether you're in the office, on the golf course, or enjoying a night out, these Polos will keep you looking and feeling your best.</p>",
           vendor: "INTO THE AM",
@@ -126,6 +129,179 @@ app.post("/products", async (req, res) => {
   }
 });
 
+app.post("/products/store-one", async (req, res) => {
+  try {
+    const numberOfProducts = 0; // Define the number of products you want to insert
+    const startFrom = 1; // Edit based on already added jacket records (For maintaining sequence in store)
+    let insertedRecords = [];
+
+    for (let i = startFrom; i <= numberOfProducts + startFrom; i++) {
+      const body = {
+        product: {
+          title: `Harrier ${i}`,
+          body_html:
+            "<p>Made from our softest poly-cotton fabric ever produced, these Polos offer unbeatable comfort and durability.</p>\n<p>Featuring a structured collar and branded buttons, our Polos deliver a sophisticated and refined look, perfect for any occasion. With the same signature tailored fit that our customers know and love, these Polos are designed to flatter your physique while still allowing for maximum freedom of movement.</p>\n<p>Our Polos also feature a printed neck label, ensuring maximum comfort throughout the day. Whether you're in the office, on the golf course, or enjoying a night out, these Polos will keep you looking and feeling your best.</p>",
+          vendor: "INTO THE AM",
+          product_type: "Men's Polos",
+          created_at: "2022-10-26T13:43:52-07:00",
+          handle: "basic-polo",
+          updated_at: "2024-03-12T02:25:45-07:00",
+          published_at: "2023-04-10T09:34:13-07:00",
+          template_suffix: "polos",
+          published_scope: "global",
+          tags: "2-16 new styles, 2XL, 3XL, 4XL, ADS, Basic, Basic Polos, Basics, Basics ADS, Black, Blue, Branded, Branded Basics, Brown, Essential Polo 3 Pack CustomV1 Bundle, Essential Polo 3 Pack CustomV2 Bundle, Essential Polo 6 Pack CustomV1 Bundle, Essential Polo 6 Pack CustomV2 Bundle, Fit-73, full-price, Green, Grey, Grin, Henleys, High Margin, L, M, multi-color, Navy, new-item, PLA, Polo, Polos, Premium Apparel, Red, RTS, S, Short Sleeve, Spring 2024, web best sellers, White, XL",
+          variants: insertProductVariants,
+          options: [
+            {
+              name: "Color",
+              position: 1,
+              values: [
+                "Black",
+                "Indigo",
+                "Navy",
+                "Olive Green",
+                "Grey",
+                "White",
+                "Charcoal",
+                "Maroon",
+                "Forest Green",
+                "Light Blue",
+                "Mint",
+                "Red",
+                "Cream",
+                "Royal Blue",
+              ],
+            },
+            {
+              name: "Size",
+              position: 2,
+              values: ["S", "M", "L", "XL", "2XL", "3XL", "4XL"],
+            },
+          ],
+          images: [insertProductImages],
+          image: {
+            position: 1,
+            created_at: "2023-04-10T08:39:55-07:00",
+            updated_at: "2023-04-10T08:40:01-07:00",
+            alt: "Basic Polo-Black-Front",
+            width: 1001,
+            height: 1250,
+            src: "https://cdn.shopify.com/s/files/1/0182/4159/products/ITAM_Basic_Mens_Polo_Black.jpg?v=1681141201",
+          },
+        },
+      };
+
+      const response = await clientForStoreOne.post("/products", {
+        data: body,
+      });
+
+      if (response.ok) {
+        const responseBody = await response.json();
+        console.log(
+          `Product ${i} ==== ${responseBody.product.title} ==== ${i} inserted successfully.ID: ${responseBody.product.id} `
+        );
+        insertedRecords.push(responseBody.product.id);
+      } else {
+        console.error(`Failed to insert product ${i}: `, response.statusText);
+      }
+    }
+
+    // Append the inserted records to the file
+    await appendToInsertedProducts(insertedRecords);
+
+    res.send(`${insertedRecords}`);
+  } catch (error) {
+    console.error("Error while inserting products:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/products/store-two", async (req, res) => {
+  try {
+    const numberOfProducts = 0; // Define the number of products you want to insert
+    const startFrom = 1; // Edit based on already added jacket records (For maintaining sequence in store)
+    let insertedRecords = [];
+
+    for (let i = startFrom; i <= numberOfProducts + startFrom; i++) {
+      const body = {
+        product: {
+          title: `Thar ${i}`,
+          body_html:
+            "<p>Made from our softest poly-cotton fabric ever produced, these Polos offer unbeatable comfort and durability.</p>\n<p>Featuring a structured collar and branded buttons, our Polos deliver a sophisticated and refined look, perfect for any occasion. With the same signature tailored fit that our customers know and love, these Polos are designed to flatter your physique while still allowing for maximum freedom of movement.</p>\n<p>Our Polos also feature a printed neck label, ensuring maximum comfort throughout the day. Whether you're in the office, on the golf course, or enjoying a night out, these Polos will keep you looking and feeling your best.</p>",
+          vendor: "INTO THE AM",
+          product_type: "Men's Polos",
+          created_at: "2022-10-26T13:43:52-07:00",
+          handle: "basic-polo",
+          updated_at: "2024-03-12T02:25:45-07:00",
+          published_at: "2023-04-10T09:34:13-07:00",
+          template_suffix: "polos",
+          published_scope: "global",
+          tags: "2-16 new styles, 2XL, 3XL, 4XL, ADS, Basic, Basic Polos, Basics, Basics ADS, Black, Blue, Branded, Branded Basics, Brown, Essential Polo 3 Pack CustomV1 Bundle, Essential Polo 3 Pack CustomV2 Bundle, Essential Polo 6 Pack CustomV1 Bundle, Essential Polo 6 Pack CustomV2 Bundle, Fit-73, full-price, Green, Grey, Grin, Henleys, High Margin, L, M, multi-color, Navy, new-item, PLA, Polo, Polos, Premium Apparel, Red, RTS, S, Short Sleeve, Spring 2024, web best sellers, White, XL",
+          variants: insertProductVariants,
+          options: [
+            {
+              name: "Color",
+              position: 1,
+              values: [
+                "Black",
+                "Indigo",
+                "Navy",
+                "Olive Green",
+                "Grey",
+                "White",
+                "Charcoal",
+                "Maroon",
+                "Forest Green",
+                "Light Blue",
+                "Mint",
+                "Red",
+                "Cream",
+                "Royal Blue",
+              ],
+            },
+            {
+              name: "Size",
+              position: 2,
+              values: ["S", "M", "L", "XL", "2XL", "3XL", "4XL"],
+            },
+          ],
+          images: [insertProductImages],
+          image: {
+            position: 1,
+            created_at: "2023-04-10T08:39:55-07:00",
+            updated_at: "2023-04-10T08:40:01-07:00",
+            alt: "Basic Polo-Black-Front",
+            width: 1001,
+            height: 1250,
+            src: "https://cdn.shopify.com/s/files/1/0182/4159/products/ITAM_Basic_Mens_Polo_Black.jpg?v=1681141201",
+          },
+        },
+      };
+      const response = await clientForStoreTwo.post("/products", {
+        data: body,
+      });
+
+      if (response.ok) {
+        const responseBody = await response.json();
+        console.log(
+          `Product ${i} ==== ${responseBody.product.title} ==== ${i} inserted successfully.ID: ${responseBody.product.id} `
+        );
+        insertedRecords.push(responseBody.product.id);
+      } else {
+        console.error(`Failed to insert product ${i}: `, response.statusText);
+      }
+    }
+
+    // Append the inserted records to the file
+    await appendToInsertedProducts(insertedRecords);
+
+    res.send(`${insertedRecords}`);
+  } catch (error) {
+    console.error("Error while inserting products:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.put("/products", async (req, res) => {
   try {
     const numberOfProducts = 1; // Define the number of products you want to update
@@ -133,7 +309,7 @@ app.put("/products", async (req, res) => {
     for (let i = 1; i <= numberOfProducts; i++) {
       const body = {
         product: {
-          title: `MICY ${i}`,
+          title: `CBZ ${i}`,
           body_html:
             "<p>Made from our softest poly-cotton fabric ever produced, these Polos offer unbeatable comfort and durability.</p>\n<p>Featuring a structured collar and branded buttons, our Polos deliver a sophisticated and refined look, perfect for any occasion. With the same signature tailored fit that our customers know and love, these Polos are designed to flatter your physique while still allowing for maximum freedom of movement.</p>\n<p>Our Polos also feature a printed neck label, ensuring maximum comfort throughout the day. Whether you're in the office, on the golf course, or enjoying a night out, these Polos will keep you looking and feeling your best.</p>",
           vendor: "INTO THE AM",
@@ -185,7 +361,7 @@ app.put("/products", async (req, res) => {
           },
         },
       };
-      const response = await client.put("/products/7948377424062", {
+      const response = await clientForStoreOne.put("/products/7958427730110", {
         data: body,
       });
 
